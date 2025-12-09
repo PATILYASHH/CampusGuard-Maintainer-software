@@ -1,0 +1,138 @@
+.add-device-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.add-device-container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.normal-behavior-info {
+  background: #e3f2fd;
+  border-left: 4px solid #2196F3;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 4px;
+}
+
+.normal-behavior-info h3 {
+  color: #1976d2;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.normal-behavior-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.normal-behavior-info li {
+  padding: 8px 0;
+  color: #555;
+  font-size: 14px;
+  border-bottom: 1px solid #bbdefb;
+}
+
+.normal-behavior-info li:last-child {
+  border-bottom: none;
+}
+
+.info-note {
+  margin-top: 15px;
+  padding: 10px;
+  background: #fff9c4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #f57f17;
+  font-weight: 500;
+}
+
+.device-form {
+  background: #f9f9f9;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.submit-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+  .add-device-container {
+    padding: 10px;
+  }
+
+  .device-form {
+    padding: 20px;
+  }
+}
