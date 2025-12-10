@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Environment variables should be set in Netlify UI (or using Netlify CLI)
+# See NETLIFY.md for recommended variables and instructions
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
