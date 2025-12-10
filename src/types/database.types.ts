@@ -1,5 +1,5 @@
 export type DeviceType = "fan" | "ac" | "pc" | "printer";
-export type DeviceStatus = "NORMAL" | "WARNING" | "MAINTENANCE_REQUIRED";
+export type DeviceStatus = "NORMAL" | "NEEDS_ATTENTION" | "MAINTENANCE_REQUIRED";
 
 export interface Device {
   id: string;
@@ -7,12 +7,14 @@ export interface Device {
   device_type: DeviceType;
   device_name: string;
   location: string;
+  installation_date: string;
   max_temp: number;
   max_vibration: number;
   max_power: number;
   max_usage: number;
   status: DeviceStatus;
   created_at: string;
+  updated_at: string;
 }
 
 export interface DeviceLog {
@@ -21,6 +23,7 @@ export interface DeviceLog {
   sensor_1: number;
   sensor_2: number;
   sensor_3: number;
+  sensor_4: number;
   status: DeviceStatus;
   created_at: string;
 }
@@ -30,6 +33,7 @@ export interface NewDevice {
   device_type: DeviceType;
   device_name: string;
   location: string;
+  installation_date: string;
   max_temp: number;
   max_vibration: number;
   max_power: number;
@@ -42,5 +46,6 @@ export interface NewDeviceLog {
   sensor_1: number;
   sensor_2: number;
   sensor_3: number;
+  sensor_4: number;
   status: DeviceStatus;
 }

@@ -1,4 +1,5 @@
 -- Drop existing tables if they exist (fresh start)
+DROP TABLE IF EXISTS sensor_logs CASCADE;
 DROP TABLE IF EXISTS device_logs CASCADE;
 DROP TABLE IF EXISTS devices CASCADE;
 
@@ -10,8 +11,13 @@ CREATE TABLE devices (
   device_name TEXT NOT NULL,
   location TEXT NOT NULL,
   installation_date DATE NOT NULL,
+  max_temp NUMERIC NOT NULL CHECK (max_temp > 0),
+  max_vibration NUMERIC NOT NULL CHECK (max_vibration > 0),
+  max_power NUMERIC NOT NULL CHECK (max_power > 0),
+  max_usage NUMERIC NOT NULL CHECK (max_usage > 0),
   status TEXT NOT NULL DEFAULT 'NORMAL' CHECK (status IN ('NORMAL', 'NEEDS_ATTENTION', 'MAINTENANCE_REQUIRED')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE(user_id, device_name)
 );
 

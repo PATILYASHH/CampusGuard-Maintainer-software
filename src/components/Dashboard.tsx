@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
     switch (status) {
       case "NORMAL":
         return "status-normal";
-      case "WARNING":
+      case "NEEDS_ATTENTION":
         return "status-warning";
       case "MAINTENANCE_REQUIRED":
         return "status-maintenance";
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
   const getStatusCounts = () => {
     const counts = {
       NORMAL: 0,
-      WARNING: 0,
+      NEEDS_ATTENTION: 0,
       MAINTENANCE_REQUIRED: 0,
     };
 
@@ -148,8 +148,8 @@ const Dashboard: React.FC = () => {
           <div className="card-label">Normal</div>
         </div>
         <div className="summary-card warning">
-          <div className="card-number">{statusCounts.WARNING}</div>
-          <div className="card-label">Warning</div>
+          <div className="card-number">{statusCounts.NEEDS_ATTENTION}</div>
+          <div className="card-label">Needs Attention</div>
         </div>
         <div className="summary-card maintenance">
           <div className="card-number">{statusCounts.MAINTENANCE_REQUIRED}</div>

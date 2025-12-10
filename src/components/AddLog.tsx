@@ -9,9 +9,10 @@ const AddLog: React.FC = () => {
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [formData, setFormData] = useState({
     device_id: "",
-    sensor_1: 0,
-    sensor_2: 0,
-    sensor_3: 0,
+    sensor_1: "",
+    sensor_2: "",
+    sensor_3: "",
+    sensor_4: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -58,25 +59,37 @@ const AddLog: React.FC = () => {
       if (fetchError) throw fetchError;
       if (!device) throw new Error("Device not found");
 
+      // Convert sensor values to numbers for evaluation
+      const sensor1 = parseFloat(formData.sensor_1) || 0;
+      const sensor2 = parseFloat(formData.sensor_2) || 0;
+      const sensor3 = parseFloat(formData.sensor_3) || 0;
+      const sensor4 = parseFloat(formData.sensor_4) || 0;
+
       // Evaluate status
       const computedStatus = evaluateStatus(
         device.device_type,
-        formData.sensor_1,
-        formData.sensor_2,
-        formData.sensor_3
+        sensor1,
+        sensor2,
+        sensor3,
+        sensor4,
+        device.max_temp,
+        device.max_vibration,
+        device.max_power,
+        device.max_usage
       );
 
       // Insert log
       const newLog: NewDeviceLog = {
         device_id: formData.device_id,
-        sensor_1: formData.sensor_1,
-        sensor_2: formData.sensor_2,
-        sensor_3: formData.sensor_3,
+        sensor_1: sensor1,
+        sensor_2: sensor2,
+        sensor_3: sensor3,
+        sensor_4: sensor4,
         status: computedStatus,
       };
 
       const { error: insertError } = await supabase
-        .from("device_logs")
+        .from("sensor_logs")
         .insert([newLog]);
 
       if (insertError) throw insertError;
@@ -98,9 +111,10 @@ const AddLog: React.FC = () => {
       // Reset form
       setFormData({
         device_id: "",
-        sensor_1: 0,
-        sensor_2: 0,
-        sensor_3: 0,
+        sensor_1: "",
+        sensor_2: "",
+        sensor_3: "",
+        sensor_4: "",
       });
       setSelectedDevice(null);
     } catch (error: any) {
@@ -117,13 +131,19 @@ const AddLog: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    
+
     if (name === "device_id") {
       const device = devices.find((d) => d.id === value) || null;
       setSelectedDevice(device);
       setFormData((prev) => ({
         ...prev,
         device_id: value,
+      }));
+    } else if (name.startsWith("sensor_")) {
+      // Keep sensor values as strings for display, convert to number only when needed
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
       }));
     } else {
       setFormData((prev) => ({
@@ -135,13 +155,13 @@ const AddLog: React.FC = () => {
 
   const sensorLabels = selectedDevice
     ? getSensorLabels(selectedDevice.device_type)
-    : { sensor1: "Sensor 1", sensor2: "Sensor 2", sensor3: "Sensor 3" };
+    : { sensor1: "Sensor 1", sensor2: "Sensor 2", sensor3: "Sensor 3", sensor4: "Sensor 4" };
 
   const getStatusClass = (status: DeviceStatus) => {
     switch (status) {
       case "NORMAL":
         return "status-normal";
-      case "WARNING":
+      case "NEEDS_ATTENTION":
         return "status-warning";
       case "MAINTENANCE_REQUIRED":
         return "status-maintenance";
@@ -243,6 +263,20 @@ const AddLog: React.FC = () => {
               value={formData.sensor_3}
               onChange={handleInputChange}
               placeholder={`Enter ${sensorLabels.sensor3.toLowerCase()}`}
+              min="0"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="sensor_4">{sensorLabels.sensor4}</label>
+            <input
+              type="number"
+              id="sensor_4"
+              name="sensor_4"
+              value={formData.sensor_4}
+              onChange={handleInputChange}
+              placeholder={`Enter ${sensorLabels.sensor4.toLowerCase()}`}
               min="0"
               required
             />

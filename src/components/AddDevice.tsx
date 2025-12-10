@@ -2,26 +2,34 @@ import React, { useState, useEffect, FormEvent } from "react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import { DeviceType, NewDevice } from "../types/database.types";
-import { getNormalBehavior } from "../utils/prediction";
+import { getNormalBehavior, getSensorLabels } from "../utils/prediction";
 import "../styles/AddDevice.css";
 
 const AddDevice: React.FC = () => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     device_type: "fan" as DeviceType,
     device_name: "",
     location: "",
-    max_temp: 0,
-    max_vibration: 0,
-    max_power: 0,
-    max_usage: 0,
+    installation_date: "",
+    max_temp: "",
+    max_vibration: "",
+    max_power: "",
+    max_usage: "",
   });
 
-  const normalBehavior = getNormalBehavior(formData.device_type);
+  const normalBehavior = getNormalBehavior(
+    formData.device_type,
+    formData.max_temp ? parseFloat(formData.max_temp) : undefined,
+    formData.max_vibration ? parseFloat(formData.max_vibration) : undefined,
+    formData.max_power ? parseFloat(formData.max_power) : undefined,
+    formData.max_usage ? parseFloat(formData.max_usage) : undefined
+  );
+
+  const sensorLabels = getSensorLabels(formData.device_type);
   const [existingDevices, setExistingDevices] = useState<string[]>([]);
 
   const [loading, setLoading] = useState(false);
-  const [loadingDevices, setLoadingDevices] = useState(true);
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -41,8 +49,6 @@ const AddDevice: React.FC = () => {
       setExistingDevices(data?.map((d) => d.device_name.toLowerCase()) || []);
     } catch (error: any) {
       console.error("Error fetching device names:", error);
-    } finally {
-      setLoadingDevices(false);
     }
   };
 
@@ -61,13 +67,27 @@ const AddDevice: React.FC = () => {
       return;
     }
 
-    // Validate no negative values
-    if (
-      formData.max_temp < 0 ||
-      formData.max_vibration < 0 ||
-      formData.max_power < 0 ||
-      formData.max_usage < 0
-    ) {
+    // Validate installation date is not in the future
+    const installDate = new Date(formData.installation_date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (installDate > today) {
+      setMessage({
+        type: "error",
+        text: "Installation date cannot be in the future.",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // Parse and validate threshold values are positive
+    const maxTemp = parseFloat(formData.max_temp) || 0;
+    const maxVibration = parseFloat(formData.max_vibration) || 0;
+    const maxPower = parseFloat(formData.max_power) || 0;
+    const maxUsage = parseFloat(formData.max_usage) || 0;
+
+    if (maxTemp <= 0 || maxVibration <= 0 || maxPower <= 0 || maxUsage <= 0) {
       setMessage({
         type: "error",
         text: "All threshold values must be positive numbers.",
@@ -83,7 +103,14 @@ const AddDevice: React.FC = () => {
 
       const newDevice: NewDevice = {
         user_id: user.id,
-        ...formData,
+        device_type: formData.device_type,
+        device_name: formData.device_name,
+        location: formData.location,
+        installation_date: formData.installation_date,
+        max_temp: maxTemp,
+        max_vibration: maxVibration,
+        max_power: maxPower,
+        max_usage: maxUsage,
         status: "NORMAL",
       };
 
@@ -104,10 +131,11 @@ const AddDevice: React.FC = () => {
         device_type: "fan",
         device_name: "",
         location: "",
-        max_temp: 0,
-        max_vibration: 0,
-        max_power: 0,
-        max_usage: 0,
+        installation_date: "",
+        max_temp: "",
+        max_vibration: "",
+        max_power: "",
+        max_usage: "",
       });
     } catch (error: any) {
       setMessage({
@@ -123,14 +151,21 @@ const AddDevice: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+
+    // Keep threshold inputs as strings while typing, convert on submit
+    const stringFields = [
+      "device_name",
+      "location",
+      "installation_date",
+      "max_temp",
+      "max_vibration",
+      "max_power",
+      "max_usage",
+    ];
+
+    setFormData((prev: any) => ({
       ...prev,
-      [name]:
-        name === "device_type"
-          ? value
-          : name === "device_name" || name === "location"
-          ? value
-          : Number(value),
+      [name]: name === "device_type" || stringFields.includes(name) ? value : Number(value),
     }));
   };
 
@@ -195,7 +230,20 @@ const AddDevice: React.FC = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="max_temp">Max Temperature</label>
+          <label htmlFor="installation_date">Installation Date</label>
+          <input
+            type="date"
+            id="installation_date"
+            name="installation_date"
+            value={formData.installation_date}
+            onChange={handleInputChange}
+            max={new Date().toISOString().split('T')[0]}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="max_temp">Max {sensorLabels.sensor1}</label>
           <input
             type="number"
             id="max_temp"
@@ -203,12 +251,14 @@ const AddDevice: React.FC = () => {
             value={formData.max_temp}
             onChange={handleInputChange}
             min="0"
+            step="0.1"
+            placeholder="e.g., 70"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="max_vibration">Max Vibration</label>
+          <label htmlFor="max_vibration">Max {sensorLabels.sensor2}</label>
           <input
             type="number"
             id="max_vibration"
@@ -216,12 +266,14 @@ const AddDevice: React.FC = () => {
             value={formData.max_vibration}
             onChange={handleInputChange}
             min="0"
+            step="0.1"
+            placeholder="e.g., 6"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="max_power">Max Power</label>
+          <label htmlFor="max_power">Max {sensorLabels.sensor3}</label>
           <input
             type="number"
             id="max_power"
@@ -229,12 +281,14 @@ const AddDevice: React.FC = () => {
             value={formData.max_power}
             onChange={handleInputChange}
             min="0"
+            step="0.1"
+            placeholder="e.g., 500"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="max_usage">Max Usage</label>
+          <label htmlFor="max_usage">Max {sensorLabels.sensor4}</label>
           <input
             type="number"
             id="max_usage"
@@ -242,6 +296,9 @@ const AddDevice: React.FC = () => {
             value={formData.max_usage}
             onChange={handleInputChange}
             min="0"
+            max="100"
+            step="0.1"
+            placeholder="e.g., 90"
             required
           />
         </div>
