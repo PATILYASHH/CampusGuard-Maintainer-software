@@ -6,6 +6,7 @@ import AddLog from './components/AddLog'
 import Dashboard from './components/Dashboard'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './App.css'
+import './styles/animations.css'
 
 type Page = 'dashboard' | 'add-device' | 'add-log'
 

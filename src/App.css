@@ -5,9 +5,29 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: #f5f7fa;
-  color: #333;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+:root {
+  --primary-600: #4f46e5;
+  --primary-700: #4338ca;
+  --primary-800: #3730a3;
+  --secondary-500: #06b6d4;
+  --success-500: #10b981;
+  --warning-500: #f59e0b;
+  --error-500: #ef4444;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --card-shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .loading-screen {
@@ -16,7 +36,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
   color: white;
 }
 
@@ -44,38 +64,72 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f5f7fa;
+  background: linear-gradient(135deg, var(--slate-50) 0%, var(--slate-100) 100%);
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--slate-200);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--card-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.main-content {
+  flex: 1;
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .main-content { padding: 20px; }
 }
 
 .navbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: white;
+  color: var(--slate-800);
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--slate-200);
   position: sticky;
   top: 0;
   z-index: 100;
+  backdrop-filter: blur(8px);
 }
 
 .nav-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 0 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 70px;
+  min-height: 64px;
 }
 
 .nav-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
+  color: var(--primary-600);
+  transition: var(--transition);
+}
+
+.nav-brand:hover {
+  color: var(--primary-700);
 }
 
 .nav-brand i {
-  font-size: 32px;
+  font-size: 28px;
 }
 
 .nav-links {
@@ -84,15 +138,15 @@ body {
 }
 
 .nav-links button {
-  padding: 10px 20px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+  padding: 10px 18px;
+  background-color: transparent;
+  color: var(--slate-700);
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: var(--transition);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -103,14 +157,15 @@ body {
 }
 
 .nav-links button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  background-color: var(--slate-100);
+  color: var(--primary-600);
 }
 
 .nav-links button.active {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--primary-600);
+  color: white;
   font-weight: 600;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(79,70,229,0.3);
 }
 
 .nav-user {
@@ -122,19 +177,22 @@ body {
 .user-info {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 15px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  gap: 10px;
+  padding: 8px 16px;
+  background-color: var(--slate-100);
+  border-radius: 10px;
+  border: 1px solid var(--slate-200);
 }
 
 .user-info i {
-  font-size: 24px;
+  font-size: 22px;
+  color: var(--primary-600);
 }
 
 .user-info span {
   font-size: 14px;
   font-weight: 500;
+  color: var(--slate-700);
 }
 
 .logout-btn {
@@ -155,6 +213,15 @@ body {
 .logout-btn:hover {
   background-color: rgba(200, 35, 51, 1);
   transform: translateY(-2px);
+}
+
+/* Accent blocks used on dashboards and info cards */
+.accent-block {
+  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  box-shadow: var(--card-shadow);
 }
 
 .main-content {

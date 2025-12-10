@@ -77,70 +77,6 @@ const Auth: React.FC = () => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email">
-              <i className="bi bi-envelope"></i> Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">
-              <i className="bi bi-lock"></i> Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              minLength={6}
-              required
-            />
-          </div>
-
-          {!isLogin && (
-            <div className="form-group">
-              <label htmlFor="confirmPassword">
-                <i className="bi bi-lock-fill"></i> Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm your password"
-                minLength={6}
-                required
-              />
-            </div>
-          )}
-
-          <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? (
-              <>
-                <i className="bi bi-hourglass-split"></i> Processing...
-              </>
-            ) : isLogin ? (
-              <>
-                <i className="bi bi-box-arrow-in-right"></i> Login
-              </>
-            ) : (
-              <>
-                <i className="bi bi-person-check"></i> Create Account
-              </>
-            )}
-          </button>
-        </form>
-
         {message && (
           <div className={`auth-message ${message.type}`}>
             <i
@@ -154,6 +90,72 @@ const Auth: React.FC = () => {
           </div>
         )}
 
+        <div className="auth-grid">
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="email">
+                <i className="bi bi-envelope"></i> Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">
+                <i className="bi bi-lock"></i> Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                minLength={6}
+                required
+              />
+            </div>
+
+            {!isLogin && (
+              <div className="form-group">
+                <label htmlFor="confirmPassword">
+                  <i className="bi bi-lock-fill"></i> Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm your password"
+                  minLength={6}
+                  required
+                />
+              </div>
+            )}
+
+            <button type="submit" disabled={loading} className="submit-btn">
+              {loading ? (
+                <>
+                  <i className="bi bi-hourglass-split"></i> Processing...
+                </>
+              ) : isLogin ? (
+                <>
+                  <i className="bi bi-box-arrow-in-right"></i> Login
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-person-check"></i> Create Account
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+
         <div className="auth-footer">
           <i className="bi bi-info-circle"></i>
           <p>
@@ -162,6 +164,22 @@ const Auth: React.FC = () => {
               : "Already have an account? Click Login above."}
           </p>
         </div>
+      </div>
+      <div className="auth-about card">
+        <h4>About CampusGuard</h4>
+        <p>
+          CampusGuard is a Predictive Maintenance system for college devices. It helps
+          maintenance teams log sensor data and receive status updates based on
+          configurable thresholds.
+        </p>
+        <ul>
+          <li><strong>Frontend:</strong> React + TypeScript, built with Vite</li>
+          <li><strong>Backend:</strong> Supabase (Postgres + Auth)</li>
+          <li><strong>Deployment:</strong> Netlify (static site + SPA routing)</li>
+        </ul>
+        <p>
+          For deployment and environment variable instructions, see <code>NETLIFY.md</code> in the repo.
+        </p>
       </div>
     </div>
   );
