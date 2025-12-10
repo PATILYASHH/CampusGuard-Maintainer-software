@@ -1,6 +1,6 @@
 import { User } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 interface AuthContextType {
   user: User | null;
@@ -19,9 +19,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // If Supabase is not configured, show an explicit error UI instead of attempting network calls
+    if (!isSupabaseConfigured) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('Error fetching Supabase session', err);
       setLoading(false);
     });
 
@@ -58,7 +68,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
-      {children}
+      {isSupabaseConfigured ? (
+        children
+      ) : (
+        <div style={{ padding: 24 }}>
+          <h2>Configuration required</h2>
+          <p>
+            Supabase environment variables are not set. Please add
+            <code style={{ margin: '0 6px', padding: 6, background: '#f3f3f3' }}>VITE_SUPABASE_URL</code> and
+            <code style={{ margin: '0 6px', padding: 6, background: '#f3f3f3' }}>VITE_SUPABASE_ANON_KEY</code> to your environment.
+          </p>
+          <p>See <strong>NETLIFY.md</strong> for deployment instructions.</p>
+        </div>
+      )}
     </AuthContext.Provider>
   );
 };
